@@ -15,6 +15,7 @@ type AutoCompleteProps = {
   apiUrl: string;
   params?: string | number;
   abrirModal?: boolean;
+  width?:number;
   selectionType: RowSelectionType;
   form: FormInstance<any>;
   valorIdSelecionado?: string | number | undefined | null;
@@ -109,7 +110,6 @@ export default function PbsAutoComplete(props: AutoCompleteProps) {
   }
 
   async function onFocus() {
-    debugger;
     const searchText = '';
     const { data } = await Api().get<IAutoCompleteOptions[]>(`${props.apiUrl}`, {
       params: {
@@ -188,6 +188,7 @@ export default function PbsAutoComplete(props: AutoCompleteProps) {
       <AutoCompleteModal
         modalVisivel={modalVisivel}
         fecharModal={handleFecharModal}
+        width={props.width}
         selecioneModal={handlSelecioneModal}
         titulo={props.label}
         apiUrl={props.apiUrl}

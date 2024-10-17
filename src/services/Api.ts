@@ -1,5 +1,5 @@
 import PbsMessage from '../components/PbsMessage/PbsMessage';
-import axios from 'axios'; // Importe o Axios diretamente
+import axios from 'axios';
 import localforage from 'localforage';
 import { getTokenAuthLogin } from '../lib/helpers';
 import { enumHttpStatusCode } from '../../src/lib/enum/enumHttpStatusCode';
@@ -18,7 +18,7 @@ export const getApiUrl = () => {
   const tenantId = accessToken["tenantId"];
 
   if (CoreApiUrl && (tenantId !== 'wbc7-dev' && tenantId !== 'dev')) {
-      baseUrl = CoreApiUrl
+      baseUrl = CoreApiUrl`/${tenantId}/`
   }
   return baseUrl;
 };
@@ -81,7 +81,7 @@ const setInterceptors = (api:any) => {
     },
     (error:any) => {
       // Faz notificações em tela
-      //closeNotification(error.config?.method.toUpperCase());
+      closeNotification(error.config?.method.toUpperCase());
 
       if (error.response?.status === enumHttpStatusCode.Status422UnprocessableEntity) {
         error.response.data.errors.forEach((error:any) => {

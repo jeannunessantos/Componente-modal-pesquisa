@@ -44,9 +44,10 @@ function App() {
               required
               destacarBotao
               //apiUrl={'produto'}
-              apiUrl={'empresa'}
+              apiUrl={'empresa/Convidado'}
               params={'comprador'}
               abrirModal
+              width={1200}
               selectionType="radio"
               form={form}
               valorIdSelecionado={1}

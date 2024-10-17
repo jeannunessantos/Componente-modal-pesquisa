@@ -4,9 +4,7 @@ import IFiltro from '../../lib/interfaces/IFiltros';
 import PbsAutoComplete from '../PbsAutoComplete';
 import Campo from './Campo';
 import { useContext, useEffect, useMemo, useState } from 'react';
-//import { useTranslation } from '../../lib/hooks/useTranslate';
 import PbsSelect from '../../components/PbsSelect/PbsSelect';
-//import PesquisaContext from 'pages/pesquisa/Pesquisa/PesquisaContext';
 import IFiltrosPesquisa from '../../lib/interfaces/IFiltrosPesquisa';
 
 type SearchFormProps = {
@@ -34,8 +32,6 @@ type ValoresType = {
 
 export default function PbsSearchForm(props: SearchFormProps) {
   const { formModal, filtros, handlePesquisar, bFlPesquisaProcessos } = props;
-  //const { t } = useTranslation();
-  //const pesquisaContext = useContext(PesquisaContext);
   const [form] = Form.useForm();
   const [valoresId, setValoresId] = useState<ValoresType>({});
   const [valoresDescricao, setValoresDescricao] = useState<ValoresType>({});
@@ -61,46 +57,13 @@ export default function PbsSearchForm(props: SearchFormProps) {
   }, [filtros]);
 
   const onFinish = (filtros: any) => {
+    debugger;
     if (bFlPesquisaProcessos) {
       const filtrosRetorno: IFiltrosPesquisa[] = [];
-
-      if (valoresId.pesquisa_numero || filtros.pesquisa_numero) 
-        filtrosRetorno.push({ sNmFiltro: 'sDsNumero_like', sVlFiltro: filtros.pesquisa_numero });
-      if (valoresId.pesquisa_objeto || filtros.pesquisa_objeto) 
-        filtrosRetorno.push({ sNmFiltro: 'sDsObjeto_like', sVlFiltro: filtros.pesquisa_objeto });
-      if (valoresId.pesquisa_tipoModalidade || filtros.pesquisa_tipoModalidade) 
-        filtrosRetorno.push({ sNmFiltro: 'sCdTipoModalidade', sVlFiltro: valoresId.pesquisa_tipoModalidade ?? filtros.pesquisa_tipoModalidade });
-      if (valoresId.pesquisa_resultado || filtros.pesquisa_resultado) 
-        filtrosRetorno.push({ sNmFiltro: 'sCdResultado', sVlFiltro: valoresId.pesquisa_resultado ?? filtros.pesquisa_resultado });
-      if (valoresId.pesquisa_tipo_avaliacao || filtros.pesquisa_tipo_avaliacao) 
-        filtrosRetorno.push({ sNmFiltro: 'sCdTipoAvaliacao', sVlFiltro: valoresId.pesquisa_tipo_avaliacao ?? filtros.pesquisa_tipo_avaliacao });
-      
-      if (valoresId.pesquisa_usuario_responsavel || filtros.pesquisa_usuario_responsavel)
-        filtrosRetorno.push({ sNmFiltro: 'sCdUsuarioResponsavel', sVlFiltro: valoresId.pesquisa_usuario_responsavel ?? filtros.pesquisa_usuario_responsavel, sDsFiltro: valoresDescricao.pesquisa_usuario_responsavel?.toString() });
-      if (valoresId.pesquisa_produto || filtros.pesquisa_produto) 
-        filtrosRetorno.push({ sNmFiltro: 'sCdItemProduto', sVlFiltro: valoresId.pesquisa_produto ?? filtros.pesquisa_produto, sDsFiltro: valoresDescricao.pesquisa_produto?.toString() });
-      if (valoresId.pesquisa_usuario_membro_comissao || filtros.pesquisa_usuario_membro_comissao)
-        filtrosRetorno.push({ sNmFiltro: 'sCdUsuarioMembroComissao', sVlFiltro: valoresId.pesquisa_usuario_membro_comissao ?? filtros.pesquisa_usuario_membro_comissao, sDsFiltro: valoresDescricao.pesquisa_usuario_membro_comissao?.toString() });
-      if (valoresId.pesquisa_fornecedor_convidado || filtros.pesquisa_fornecedor_convidado)
-        filtrosRetorno.push({ sNmFiltro: 'sCdFornecedorConvidado', sVlFiltro: valoresId.pesquisa_fornecedor_convidado ?? filtros.pesquisa_fornecedor_convidado, sDsFiltro: valoresDescricao.pesquisa_fornecedor_convidado?.toString() });
-      if (valoresId.pesquisa_fornecedor_vencedor || filtros.pesquisa_fornecedor_vencedor)
-        filtrosRetorno.push({ sNmFiltro: 'sCdFornecedorVencedor', sVlFiltro: valoresId.pesquisa_fornecedor_vencedor ?? filtros.pesquisa_fornecedor_vencedor, sDsFiltro: valoresDescricao.pesquisa_fornecedor_vencedor?.toString() });
-      if (valoresId.pesquisa_empresa || filtros.pesquisa_empresa) 
-        filtrosRetorno.push({ sNmFiltro: 'sCdEmpresaCompradora', sVlFiltro: valoresId.pesquisa_empresa ?? filtros.pesquisa_empresa, sDsFiltro: valoresDescricao.pesquisa_empresa?.toString() });
-
       handlePesquisar(filtrosRetorno);
       if (hasFiltrosAvancados) setOpenDrawer(false);
       return;
     }
-
-    if (filtros.pesquisa_usuario_empresa) filtros.pesquisa_usuario_empresa = valoresId.pesquisa_usuario_empresa;
-    if (filtros.pesquisa_usuario_responsavel) filtros.pesquisa_usuario_responsavel = valoresId.pesquisa_usuario_responsavel;
-    if (filtros.pesquisa_produto) filtros.pesquisa_produto = valoresId.pesquisa_produto;
-    if (filtros.pesquisa_usuario_membro_comissao) filtros.pesquisa_usuario_membro_comissao = valoresId.pesquisa_usuario_membro_comissao;
-    if (filtros.pesquisa_fornecedor_convidado) filtros.pesquisa_fornecedor_convidado = valoresId.pesquisa_fornecedor_convidado;
-    if (filtros.pesquisa_fornecedor_vencedor) filtros.pesquisa_fornecedor_vencedor = valoresId.pesquisa_fornecedor_vencedor;
-    if (filtros.pesquisa_empresa) filtros.pesquisa_empresa = valoresId.pesquisa_empresa;
-
     handlePesquisar(filtros);
   };
 
@@ -179,20 +142,16 @@ export default function PbsSearchForm(props: SearchFormProps) {
         form.setFieldValue(filtro.id, valueSelected);
       }
     }
-
-
     return returnComponent;
   };
 
   const onChangeFilter = (value:any, id:any) => {
-    debugger;
     const filtrosUpdated: IFiltro[] = filtrosState.map((filtro) => {
       if (filtro.id === id) {
         form.setFieldValue(filtro.id, !value || value === '' ? filtro.default : value);
         filtro.value = !value && filtro.type === 'dropDownList' ? filtro.default : value;
         return filtro;
       }
-
       return filtro;
     });
 

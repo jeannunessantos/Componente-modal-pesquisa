@@ -20,6 +20,7 @@ type RowSelectionType = 'checkbox' | 'radio';
 type PbsModalProps = {
   modalVisivel: boolean;
   fecharModal: any;
+  width?:number;
   titulo: string;
   apiUrl: string;
   params?: string | number;
@@ -90,6 +91,7 @@ export default function PbsAutoCompleteModal(props: PbsModalProps) {
   }, [props.tipoPesquisa]);
 
   useEffect(() => {
+    debugger;
     async function loadDefault() {
       const { data } = await Api().get<IAutoCompleteModal[]>(`${props.apiUrl}`, {
         params: Filtros
@@ -176,7 +178,7 @@ export default function PbsAutoCompleteModal(props: PbsModalProps) {
         onOk={handleOk}
         bodyStyle={{ overflowY: 'hidden' }}
         onCancel={handleCancel}
-        width={1200}
+        width={props.width != undefined ? props.width : 1200}
         footer={[ 
           <Button key="back" onClick={handleCancel}>
             {'Cancelar'}
