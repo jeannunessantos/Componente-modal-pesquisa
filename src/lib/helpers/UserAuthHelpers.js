@@ -48,7 +48,6 @@ const getRoles = () => {
  * Retorna a url de acesso ao core api
  */
 export const getBaseCoreUrl = () => {
-    debugger;
     let pbsOidc = getTokenAuthLogin();
     let baseUrl = "";
 

@@ -185,6 +185,7 @@ export default function PbsSearchForm(props: SearchFormProps) {
   };
 
   const onChangeFilter = (value:any, id:any) => {
+    debugger;
     const filtrosUpdated: IFiltro[] = filtrosState.map((filtro) => {
       if (filtro.id === id) {
         form.setFieldValue(filtro.id, !value || value === '' ? filtro.default : value);

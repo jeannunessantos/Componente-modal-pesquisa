@@ -1,6 +1,5 @@
 import { SearchOutlined } from '@ant-design/icons';
-//import { useTranslation } from '_common/lib/hooks/useTranslate';
-//import { Api } from '_common/lib/services/Api';
+import { Api } from '../services/Api';
 import { AutoComplete, Button, Form, FormInstance } from 'antd';
 import Group from 'antd/lib/input/Group';
 import { useEffect, useState } from 'react';
@@ -43,7 +42,6 @@ export default function PbsAutoComplete(props: AutoCompleteProps) {
   const [idSelecionado, setIdSelecionado] = useState<string | number>('');
   const [descricaoSelecionada, setDescricaoSelecionada] = useState<string>('');
   const [search, setSearch] = useState(false);
-  //const { t } = useTranslation();
 
   const onSelect = (value:any, options:any) => {
     setIdSelecionado(options.key);
@@ -111,44 +109,15 @@ export default function PbsAutoComplete(props: AutoCompleteProps) {
   }
 
   async function onFocus() {
+    debugger;
     const searchText = '';
-    const data = [
-        { companyKey : "0004197849", key : 14636, value: "0004197849" },
-        { companyKey : "0004197850", key : 14637, value: "0004197850" },
-        { companyKey : "0004197851", key : 14638, value: "0004197851" },
-    ];
-    // switch (props.apiUrl) {
-    //   case 'usuario':
-    //     const { data: usuarios } = await Api().get(`${props.apiUrl}`, {
-    //       params: {
-    //         nCdEmpresa: props.params,
-    //         sNmUsuario: searchText
-    //       }
-    //     });
-        
-
-    //     setOpcoesApi(usuarios);
-    //     break;
-    //   case 'usuario/UsuariosEmpresaExterna':
-    //     const { data: usuariosExtena } = await Api().get(`${props.apiUrl}`, {
-    //       params: {
-    //         sNmUsuarioFiltro: searchText
-    //       }
-    //     });
-    //     setOpcoesApi(usuariosExtena);
-
-    //     break;
-    //   default:
-    //     const { data } = await Api().get<IAutoCompleteOptions[]>(`${props.apiUrl}`, {
-    //       params: {
-    //         key: props.params,
-    //         value_like: searchText
-    //       }
-    //     });
-
-        setOpcoesApi(data);
-    //    break;
-    //}
+    const { data } = await Api().get<IAutoCompleteOptions[]>(`${props.apiUrl}`, {
+      params: {
+        key: props.params,
+        value_like: searchText
+      }
+    });
+    setOpcoesApi(data);
   }
 
   useEffect(() => {
@@ -159,55 +128,10 @@ export default function PbsAutoComplete(props: AutoCompleteProps) {
         [props.id]: undefined,
         [props.name]: undefined
       });
-
-      if (props.id == 'sCdUsuario') {
-        loadUsuarioByEmpresa();
-      }
-      if (props.id == 'nCdDepartamento') {
-        loadDepartamentoByEmpresa();
-      }
       //props.resetStatus();
       setSearch(true);
     }
   }, [props.clear]);
-
-  function loadUsuarioByEmpresa() {
-    const data = [
-        { companyKey : "0004197849", key : 14636, value: "0004197849" },
-        { companyKey : "0004197849", key : 14637, value: "0004197849" },
-        { companyKey : "0004197849", key : 14638, value: "0004197849" },
-    ];
-    setOpcoesApi(data);
-    // Api()
-    //   .get<IAutoCompleteOptions[]>(`/usuario`, {
-    //     params: {
-    //       key: props.params,
-    //       value_like: ''
-    //     }
-    //   })
-    //   .then(function (resp:any) {
-    //     setOpcoesApi(resp.data);
-    //   });
-  }
-
-  function loadDepartamentoByEmpresa() {
-    // Api()
-    //   .get<IAutoCompleteOptions[]>(`/departamento`, {
-    //     params: {
-    //       key: props.params,
-    //       value_like: ''
-    //     }
-    //   })
-    //   .then(function (resp:any) {
-    //     setOpcoesApi(resp.data);
-    //   });
-    const data = [
-        { companyKey : "0004197849", key : 14636, value: "0004197849" },
-        { companyKey : "0004197849", key : 14637, value: "0004197849" },
-        { companyKey : "0004197849", key : 14638, value: "0004197849" },
-    ];
-    setOpcoesApi(data);
-  }
 
   function resetClear() {
     setSearch(false);
@@ -277,7 +201,7 @@ export default function PbsAutoComplete(props: AutoCompleteProps) {
         valorDescricaoSelecionado={descricaoSelecionada}
         columnDescricaoDefaultConfig={props.columnDescricaoDefaultConfig}
         filterDescricaoDefaultConfig={props.filterDescricaoDefaultConfig}
-      />
+        />
     </>
   );
 }

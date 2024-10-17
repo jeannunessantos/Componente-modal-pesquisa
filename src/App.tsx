@@ -19,8 +19,19 @@ function App() {
   const [form] = Form.useForm();
 
   function changeField() {}
-  const columnDescricaoDefaultConfig = [{ title: 'Código', dataIndex: 'companyKey', width: '12%' },{ title: 'Descrição', dataIndex: 'value' }];
-  const filterDescricaoDefaultConfig = [{ id: 'pesquisa_codigo', descricao: 'Código', span: 4 }, { id: 'pesquisa_descricao', descricao: 'Descrição', span: 6 },];
+   const columnsPesquisaConfig = [{ title: 'Código', dataIndex: 'companyKey', width: '12%' },{ title: 'Descrição', dataIndex: 'value' }];
+   const filtersPesquisaConfig = [{ id: 'sNrCnpj', descricao: 'CNPJ', span: 4 }, { id: 'sNmEmpresa', descricao: 'Descrição', span: 6 },];
+  
+  // const columnsPesquisaConfig = [
+  //   { title: 'Código', dataIndex: 'sCdProdutoEmpresa', width: '12%' },
+  //   { title: 'Descrição', dataIndex: 'value' },
+  //   { title: 'Linha de fornecimento', dataIndex: 'sDsLinhaFornecimento', width: '35%' }
+  // ];
+  // const filtersPesquisaConfig = [
+  //   { id: 'sCdProdutoEmpresa', descricao: 'Código', span: 4 },
+  //   { id: 'sDsProduto', descricao: 'Nome', span: 6 },
+  //   { id: 'sDsLinhaForn', descricao: 'Linha de fornecimento', span: 6 }
+  // ];
 
   return (
     <div className="App">
@@ -32,6 +43,7 @@ function App() {
               label={'Empresa'}
               required
               destacarBotao
+              //apiUrl={'produto'}
               apiUrl={'empresa'}
               params={'comprador'}
               abrirModal
@@ -44,8 +56,8 @@ function App() {
               disabled={false}
               key={'nCdEmpresa'}
               tipoPesquisa="pesquisa_empresa"
-              columnDescricaoDefaultConfig={columnDescricaoDefaultConfig}
-              filterDescricaoDefaultConfig={filterDescricaoDefaultConfig}
+              columnDescricaoDefaultConfig={columnsPesquisaConfig}
+              filterDescricaoDefaultConfig={filtersPesquisaConfig}
               /> 
               </div>
       </header>

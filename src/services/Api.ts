@@ -1,22 +1,26 @@
 import PbsMessage from '../components/PbsMessage/PbsMessage';
 import axios from 'axios'; // Importe o Axios diretamente
 import localforage from 'localforage';
-//import { getRepresentacaoGuid } from '../global/representante';
-import { getBaseCoreUrl, getTokenAuthLogin } from '../lib/helpers';
-//import i18n from '../locales';
+import { getTokenAuthLogin } from '../lib/helpers';
 import { enumHttpStatusCode } from '../../src/lib/enum/enumHttpStatusCode';
 import { closeNotification, openNotification } from '../components/PbsNotification/PbsNotification';
 import useText from '../lib/hooks/useText';
+import { jwtDecode } from "jwt-decode";
 
 // Retorna a URL base da API
 export const getApiUrl = () => {
-  debugger;
-  //  if (import.meta.env.DEV) {
-  //    return `${import.meta.env.VITE_APP_API_URL}`;
-  //  }
-  var baseCoreUrl = getBaseCoreUrl();
-  baseCoreUrl += baseCoreUrl.substring(baseCoreUrl.length - 1) === '/' ? '' : '/';
-  return `${baseCoreUrl}licitacao-backend`;
+  const token = getTokenAuthLogin();
+  const  accessToken = jwtDecode(token) as any;
+
+  let baseUrl: any;
+  baseUrl = 'https://localhost:44312';
+  const CoreApiUrl = accessToken["app.CoreApiUrl"];
+  const tenantId = accessToken["tenantId"];
+
+  if (CoreApiUrl && (tenantId !== 'wbc7-dev' && tenantId !== 'dev')) {
+      baseUrl = CoreApiUrl
+  }
+  return baseUrl;
 };
 
 export const getCustomErrorCode = (error:any) => {
@@ -52,9 +56,6 @@ const setInterceptors = (api:any) => {
     const isRefreshEndpoint = url.toLowerCase().includes('/chat') || url.toLowerCase().includes('/refresh') || url.toLowerCase().includes('/sessaonegociacao');
     // if (method != "GET")
        openNotification(method, isRefreshEndpoint);
-
-    // const uidRepresentacao = getRepresentacaoGuid();
-    // if (uidRepresentacao) config.headers['uidRepresentacao'] = uidRepresentacao;
 
     const token = getTokenAuthLogin();
     config.baseURL = getApiUrl();

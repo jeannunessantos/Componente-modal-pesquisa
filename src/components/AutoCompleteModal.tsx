@@ -51,13 +51,15 @@ export default function PbsAutoCompleteModal(props: PbsModalProps) {
   const [idSelecionado, setIdSelecionado] = useState<IAutoCompleteModal[]>([]);
   const [descricaoSelecionada, setDescricaoSelecionada] = useState<IAutoCompleteModal[]>([]);
   const [filtroCnpjCpf, setFiltroCnpjCpf] = useState<string>('');
+  
+  
+  const [Filtros, setFiltros] = useState<any>(new Object());
   const [filtroDescricao, setFiltroDescricao] = useState<string>('');
   const [filtroCodigo, setFiltroCodigo] = useState<string>('');
   const [filtroEmpresa, setFiltroEmpresa] = useState<string>('');
   const [filtroLinhaFornecimento, setFiltroLinhaFornecimento] = useState<string>('');
-  //const { appContext } = useContext(AppContext);
+
   const { formatCpfCnpj } = useCpfCnpj();
-  //const { t } = useTranslation();
   const [form] = Form.useForm();
   const [colunasState, setColunasState] = useState<ColumnsType>([]);
   const [filtrosState, setFiltrosState] = useState<IFiltro[]>([]);
@@ -69,44 +71,11 @@ export default function PbsAutoCompleteModal(props: PbsModalProps) {
     setGridSize(`${getGridSize(height - 120, 280)}px`);
   }, []);
 
-
-
-  const columnDescricaoDefaultConfig = [{ title: 'Descrição', dataIndex: 'value' }];
-  const filterDescricaoDefaultConfig = [{ id: 'pesquisa_descricao', descricao: 'Descrição', span: 6 },];
-
-  const tipoPesquisaConfig = {
-    //  pesquisa_usuario_responsavel: {
-    //    columns: columnsPesquisaUsuarioConfig,
-    //    filters: filtersPesquisaUsuarioConfig
-    // },
-    // pesquisa_usuario_membro_comissao: {
-    //   columns: columnsPesquisaUsuarioConfig,
-    //   filters: filtersPesquisaUsuarioConfig
-    // },
-    // pesquisa_produto: {
-    //   columns: columnsPesquisaProdutoConfig,
-    //   filters: filtersPesquisaProdutoConfig
-    // },
-    // pesquisa_comprador: {
-    //   columns: columnDescricaoDefaultConfig,
-    //   filters: filtersPesquisaCompradorConfig
-    // },
-    //  pesquisa_empresa: {
-    //    columns: columnsPesquisaEmpresaConfig,
-    //    filters: filtersPesquisaEmpresaConfig
-    //  },
-    // pesquisa_fornecedor_convidado: {
-    //   columns: columnsPesquisaEmpresaConfig,
-    //   filters: filtersPesquisaEmpresaConfig
-    // },
-    // pesquisa_fornecedor_vencedor: {
-    //   columns: columnsPesquisaEmpresaConfig,
-    //   filters: filtersPesquisaEmpresaConfig
-    // }
-  };
+  const filterDescricaoDefaultConfig = [{ id: 'pesquisa_codigo', descricao: 'Código', span: 4 }, { id: 'pesquisa_descricao', descricao: 'Descrição', span: 6 }];
+  const columnDescricaoDefaultConfig = [{ title: 'Código', dataIndex: 'companyKey', width: '12%' },{ title: 'Descrição', dataIndex: 'value' }];
 
   useEffect(() => {
-    if(props.columnDescricaoDefaultConfig != null && props.filterDescricaoDefaultConfig != null){
+    if(props.columnDescricaoDefaultConfig != undefined && props.filterDescricaoDefaultConfig != undefined){
       
       //const { columns, filters } = tipoPesquisaConfig[props.tipoPesquisa];
       const columns = props.columnDescricaoDefaultConfig;
@@ -122,73 +91,20 @@ export default function PbsAutoCompleteModal(props: PbsModalProps) {
 
   useEffect(() => {
     async function loadDefault() {
-    //   const { data } = await Api().get<IAutoCompleteModal[]>(`${props.apiUrl}`, {
-    //     params: {
-    //       value_like: filtroDescricao
-    //     }
-    //   });
-    const data = [
-        { companyKey : "0004197849", key : 14636, value: "0004197849" },
-        { companyKey : "0004197850", key : 14637, value: "0004197850" },
-        { companyKey : "0004197851", key : 14638, value: "0004197851" },
-    ];
-      setRetorno(data);
-    }
-   
-
-    async function loadEmpresa() {
-        debugger;
-      //  const resultData = await Api().get<IAutoCompleteModal[]>(`${props.apiUrl}`, {
-      //    params: {
-      //      key: props.params,
-      //      value_like: filtroDescricao,
-      //      company_key: filtroCnpjCpf.replace(/[^0-9]/g, '')
-      //    }
-      //  });
-       
-    const data = [
-        { companyKey : "0004197849", key : 14636, value: "0004197849" },
-        { companyKey : "0004197850", key : 14637, value: "0004197850" },
-        { companyKey : "0004197851", key : 14638, value: "0004197851" },
-    ];
+      const { data } = await Api().get<IAutoCompleteModal[]>(`${props.apiUrl}`, {
+        params: Filtros
+        
+      });
       formatarCpfCnpj(data);
       setRetorno(data);
     }
- 
 
     if (props.modalVisivel) {
-      switch (props.apiUrl) {
-        case 'usuario':
-          //loadUsuarios();
-          break;
-        case 'empresa':
-        case 'empresa/FornecedorasAtivas':
-          loadEmpresa();
-          break;
-        case 'empresa/convidado':
-          //loadEmpresaConvidado();
-          break;
-        case 'empresa/ExternaUsuario':
-          //loadEmpresaExternaUsuario();
-          break;
-        case 'secretaria':
-        case 'regimeExecucao':
-          loadDefault();
-          break;
-        case 'criterio':
-          //loadCriterio();
-          break;
-        case 'usuario/UsuariosEmpresaExterna':
-          //loadUsuariosEmpresaExterna();
-          break;
-        default:
-          //loadDocumentos();
-          break;
-      }
-
+      loadDefault();
       props.resetStatus();
     }
-  }, [filtroDescricao, filtroCodigo, filtroCnpjCpf, filtroEmpresa, filtroLinhaFornecimento, props.newSearch, props.modalVisivel]);
+
+  }, [Filtros, filtroDescricao, filtroCodigo, filtroCnpjCpf, filtroEmpresa, filtroLinhaFornecimento, props.newSearch, props.modalVisivel]);
 
   function handleOk() {
     if (idSelecionado.length <= 0) {
@@ -212,6 +128,8 @@ export default function PbsAutoCompleteModal(props: PbsModalProps) {
   }
 
   function handlePesquisarFiltro(filtros:any) {
+    debugger;
+    setFiltros(filtros ? filtros : '');
     setFiltroDescricao(filtros.pesquisa_descricao ? filtros.pesquisa_descricao : '');
     setFiltroCodigo(filtros.pesquisa_codigo ? filtros.pesquisa_codigo : '');
     setFiltroCnpjCpf(filtros.pesquisa_cnpjcpf ? filtros.pesquisa_cnpjcpf : '');
