@@ -102,7 +102,9 @@ export default function PbsSearchForm(props: SearchFormProps) {
               <PbsAutoComplete
                 selectionType="radio"
                 form={formModal ? formModal : form}
-                apiUrl={filtro.apiUrl != undefined ? filtro.apiUrl : ''}
+                apiUrlBase={filtro.apiUrlBase != undefined ? filtro.apiUrlBase : ''}
+                apiController={filtro.apiController != undefined ? filtro.apiController : ''}
+                apiEndPoint={filtro.apiEndPoint != undefined ? filtro.apiEndPoint : ''}
                 params={filtro.param != undefined ? filtro.param : ''}
                 id={filtro.id}
                 name=""
@@ -178,9 +180,6 @@ export default function PbsSearchForm(props: SearchFormProps) {
     setValoresDescricao({});
     setValoresId({});
 
-    // if (pesquisaContext) {
-    //   if (pesquisaContext.filtrosStore.filtrosPesquisa) pesquisaContext.filtrosStore.handleClean();
-    // }
     handlePesquisar(filtrosUpdated);
   };
 

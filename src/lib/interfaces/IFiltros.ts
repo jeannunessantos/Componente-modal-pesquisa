@@ -7,7 +7,9 @@ export default interface IFiltro {
   span: number;
   type?: string | undefined;
   param?: string | undefined;
-  apiUrl?: string | undefined;
+  apiUrlBase?: string | undefined;
+  apiController?: string | undefined;
+  apiEndPoint?: string | undefined;
   valorIdSelecionado?: number | string | undefined;
   valorDescricaoSelecionada?: string | undefined;
   options?: ISelect[] | undefined;

@@ -18,7 +18,9 @@ function App() {
   const [isCamposBloqueados, setCamposBloqueados] = useState<boolean>(true);
   const [form] = Form.useForm();
 
-  function changeField() {}
+  function changeField(field:any, _options?:any, value?:any) {
+    //aqui recumpera os dados selecionados.
+  }
    const columnsPesquisaConfig = [{ title: 'Código', dataIndex: 'companyKey', width: '12%' },{ title: 'Descrição', dataIndex: 'value' }];
    const filtersPesquisaConfig = [{ id: 'sNrCnpj', descricao: 'CNPJ', span: 4 }, { id: 'sNmEmpresa', descricao: 'Descrição', span: 6 },];
   
@@ -43,15 +45,16 @@ function App() {
               label={'Empresa'}
               required
               destacarBotao
-              //apiUrl={'produto'}
-              apiUrl={'empresa/Convidado'}
+              apiUrlBase={'https://localhost:44312'}
+              apiController={'/empresa'}
+              apiEndPoint={'/Convidado'}
               params={'comprador'}
               abrirModal
               width={1200}
               selectionType="radio"
               form={form}
               valorIdSelecionado={1}
-              valorDescricaoSelecionada={'Empresa compradora'}
+              valorDescricaoSelecionada={'Empresa compradora'} 
               clear
               onChange={changeField}
               disabled={false}

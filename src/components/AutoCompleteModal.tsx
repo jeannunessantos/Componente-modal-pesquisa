@@ -1,19 +1,16 @@
-//import AppContext from '../AppContext';
 import PbsSearchForm from '../components/PbsSearchForm/PbsSearchForm';
 import LoadingSpinner from '../components/lotties/LoadingSpinner';
 import useCpfCnpj from '../lib/hooks/useCpfCnpj';
 import useGridSize from '../lib/hooks/useGridSize';
-//import { useTranslation } from '_common/lib/hooks/useTranslate';
 import useWindowDimensions from '../lib/hooks/useWindowDimensions';
 import IFiltro from '../lib/interfaces/IFiltros';
 import { Api } from '../services/Api';
 import { Button, Divider, Form } from 'antd';
 import { ColumnsType } from 'antd/es/table';
-import React, { Key, useContext, useEffect, useMemo, useState } from 'react';
+import React, { Key, useEffect, useMemo, useState } from 'react';
 import PbsMessage from '../components/PbsMessage/PbsMessage';
 import PbsTable from '../components/PbsTable/PbsTable';
 import PbsModal from '../components/PbsModal/PbsModal';
-//import PbsEmpresa from '../PbsEmpresa';
 
 type RowSelectionType = 'checkbox' | 'radio';
 
@@ -22,7 +19,9 @@ type PbsModalProps = {
   fecharModal: any;
   width?:number;
   titulo: string;
-  apiUrl: string;
+  apiUrlBase: string;
+  apiController: string;
+  apiEndPoint: string;
   params?: string | number;
   selectionType: RowSelectionType;
   selecioneModal: any;
@@ -51,15 +50,9 @@ export default function PbsAutoCompleteModal(props: PbsModalProps) {
   const [retorno, setRetorno] = useState<IAutoCompleteModal[] | undefined>();
   const [idSelecionado, setIdSelecionado] = useState<IAutoCompleteModal[]>([]);
   const [descricaoSelecionada, setDescricaoSelecionada] = useState<IAutoCompleteModal[]>([]);
-  const [filtroCnpjCpf, setFiltroCnpjCpf] = useState<string>('');
   
   
   const [Filtros, setFiltros] = useState<any>(new Object());
-  const [filtroDescricao, setFiltroDescricao] = useState<string>('');
-  const [filtroCodigo, setFiltroCodigo] = useState<string>('');
-  const [filtroEmpresa, setFiltroEmpresa] = useState<string>('');
-  const [filtroLinhaFornecimento, setFiltroLinhaFornecimento] = useState<string>('');
-
   const { formatCpfCnpj } = useCpfCnpj();
   const [form] = Form.useForm();
   const [colunasState, setColunasState] = useState<ColumnsType>([]);
@@ -77,8 +70,6 @@ export default function PbsAutoCompleteModal(props: PbsModalProps) {
 
   useEffect(() => {
     if(props.columnDescricaoDefaultConfig != undefined && props.filterDescricaoDefaultConfig != undefined){
-      
-      //const { columns, filters } = tipoPesquisaConfig[props.tipoPesquisa];
       const columns = props.columnDescricaoDefaultConfig;
       const filters = props.filterDescricaoDefaultConfig;
       setColunasState(columns);
@@ -91,9 +82,9 @@ export default function PbsAutoCompleteModal(props: PbsModalProps) {
   }, [props.tipoPesquisa]);
 
   useEffect(() => {
-    debugger;
     async function loadDefault() {
-      const { data } = await Api().get<IAutoCompleteModal[]>(`${props.apiUrl}`, {
+      var url = props.apiUrlBase + props.apiController;
+      const { data } = await Api(url).get<IAutoCompleteModal[]>(props.apiEndPoint, {
         params: Filtros
         
       });
@@ -106,7 +97,7 @@ export default function PbsAutoCompleteModal(props: PbsModalProps) {
       props.resetStatus();
     }
 
-  }, [Filtros, filtroDescricao, filtroCodigo, filtroCnpjCpf, filtroEmpresa, filtroLinhaFornecimento, props.newSearch, props.modalVisivel]);
+  }, [Filtros, props.newSearch, props.modalVisivel]);
 
   function handleOk() {
     if (idSelecionado.length <= 0) {
@@ -130,13 +121,7 @@ export default function PbsAutoCompleteModal(props: PbsModalProps) {
   }
 
   function handlePesquisarFiltro(filtros:any) {
-    debugger;
     setFiltros(filtros ? filtros : '');
-    setFiltroDescricao(filtros.pesquisa_descricao ? filtros.pesquisa_descricao : '');
-    setFiltroCodigo(filtros.pesquisa_codigo ? filtros.pesquisa_codigo : '');
-    setFiltroCnpjCpf(filtros.pesquisa_cnpjcpf ? filtros.pesquisa_cnpjcpf : '');
-    setFiltroEmpresa(filtros.pesquisa_empresa ? filtros.pesquisa_empresa : '');
-    setFiltroLinhaFornecimento(filtros.pesquisa_linha_fornecimento_produto ? filtros.pesquisa_linha_fornecimento_produto : '');
   }
 
   function formatarCpfCnpj(data:any) {

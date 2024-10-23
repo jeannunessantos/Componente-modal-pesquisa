@@ -5,23 +5,6 @@ import { getTokenAuthLogin } from '../lib/helpers';
 import { enumHttpStatusCode } from '../../src/lib/enum/enumHttpStatusCode';
 import { closeNotification, openNotification } from '../components/PbsNotification/PbsNotification';
 import useText from '../lib/hooks/useText';
-import { jwtDecode } from "jwt-decode";
-
-// Retorna a URL base da API
-export const getApiUrl = () => {
-  const token = getTokenAuthLogin();
-  const  accessToken = jwtDecode(token) as any;
-
-  let baseUrl: any;
-  baseUrl = 'https://localhost:44312';
-  const CoreApiUrl = accessToken["app.CoreApiUrl"];
-  const tenantId = accessToken["tenantId"];
-
-  if (CoreApiUrl && (tenantId !== 'wbc7-dev' && tenantId !== 'dev')) {
-      baseUrl = CoreApiUrl`/${tenantId}/`
-  }
-  return baseUrl;
-};
 
 export const getCustomErrorCode = (error:any) => {
   if(error.response.data.statusCode == enumHttpStatusCode.Status422UnprocessableEntity 
@@ -33,12 +16,12 @@ export const getCustomErrorCode = (error:any) => {
 };
 
 //Retorna as configurações do axios
-const getAxiosConfig = (keepCache:any) => {
+const getAxiosConfig = (url:any, keepCache:any) => {
   let cache = getCacheInstance();
   if (!keepCache) cache.clear();
 
   return {
-    baseURL: getApiUrl(),
+    baseURL: url,
     headers: {
       Authorization: `Bearer ${getTokenAuthLogin()}`
     }
@@ -46,7 +29,7 @@ const getAxiosConfig = (keepCache:any) => {
 };
 
 // Interceptores de requisições e respostas
-const setInterceptors = (api:any) => {
+const setInterceptors = (url:any, api:any) => {
   api.interceptors.request.use(async (config:any) => {
     // Extrai o método e o URL do request
     const method = config.method.toUpperCase();
@@ -58,7 +41,6 @@ const setInterceptors = (api:any) => {
        openNotification(method, isRefreshEndpoint);
 
     const token = getTokenAuthLogin();
-    config.baseURL = getApiUrl();
     if (token) config.headers.Authorization = `Bearer ${token}`;
 
     //Codifica as strings enviadas para o servidor
@@ -100,9 +82,9 @@ const setInterceptors = (api:any) => {
 };
 
 // Retorna uma instância do Axios
-const getAxios = (keepCache:any) => {
-  const axiosInstance = axios.create(getAxiosConfig(keepCache));
-  setInterceptors(axiosInstance);
+const getAxios = (url:any, keepCache:any) => {
+  const axiosInstance = axios.create(getAxiosConfig(url, keepCache));
+  setInterceptors(url, axiosInstance);
   return axiosInstance;
 };
 
@@ -115,8 +97,8 @@ export const getCacheInstance = () => {
   });
 };
 
-export const Api = (keepCache = false) => {
-  return getAxios(keepCache);
+export const Api = (url:any,keepCache = false) => {
+  return getAxios(url, keepCache);
 };
 
 export default { Api };

@@ -12,7 +12,9 @@ type AutoCompleteProps = {
   label: string;
   required?: boolean;
   destacarBotao?: boolean;
-  apiUrl: string;
+  apiUrlBase: string;
+  apiController: string;
+  apiEndPoint: string;
   params?: string | number;
   abrirModal?: boolean;
   width?:number;
@@ -82,7 +84,6 @@ export default function PbsAutoComplete(props: AutoCompleteProps) {
   }
 
   async function onSearch(searchText: string) {
-    debugger;
     setFiltro(searchText);
     const filteredOptions = opcoesApi.filter(option => option.value.toUpperCase().includes(searchText.toUpperCase()));
     setOpcoesFilter(filteredOptions)
@@ -111,7 +112,8 @@ export default function PbsAutoComplete(props: AutoCompleteProps) {
 
   async function onFocus() {
     const searchText = '';
-    const { data } = await Api().get<IAutoCompleteOptions[]>(`${props.apiUrl}`, {
+    var url = props.apiUrlBase + props.apiController;
+    const { data } = await Api(url).get<IAutoCompleteOptions[]>(props.apiEndPoint, {
       params: {
         key: props.params,
         value_like: searchText
@@ -128,7 +130,6 @@ export default function PbsAutoComplete(props: AutoCompleteProps) {
         [props.id]: undefined,
         [props.name]: undefined
       });
-      //props.resetStatus();
       setSearch(true);
     }
   }, [props.clear]);
@@ -191,7 +192,9 @@ export default function PbsAutoComplete(props: AutoCompleteProps) {
         width={props.width}
         selecioneModal={handlSelecioneModal}
         titulo={props.label}
-        apiUrl={props.apiUrl}
+        apiUrlBase={props.apiUrlBase}
+        apiController={props.apiController}
+        apiEndPoint={props.apiEndPoint}
         params={props.params}
         selectionType={props.selectionType}
         id={props.id}
